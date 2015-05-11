@@ -22,3 +22,4 @@
 #import "UINavigationBar+CASAdditions.h"
 #import "UITabBar+CASAdditions.h"
 #import "UIToolBar+CASAdditions.h"
+#import "CASAssociatedObjectsWeakWrapper.h"

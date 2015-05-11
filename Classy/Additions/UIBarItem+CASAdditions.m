@@ -9,8 +9,11 @@
 #import "UIBarItem+CASAdditions.h"
 #import <objc/runtime.h>
 #import "CASStyler.h"
+#import "CASAssociatedObjectsWeakWrapper.h"
 
 @implementation UIBarItem (CASAdditions)
+
+CASSynthesize(weak, id<CASStyleableItem>, cas_parent, setCas_parent);
 
 #pragma mark - CASStyleableItem
 
@@ -23,14 +26,6 @@
     objc_setAssociatedObject(self, @selector(cas_styleClass), styleClass, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
     [self cas_setNeedsUpdateStyling];
-}
-
-- (id<CASStyleableItem>)cas_parent {
-    return objc_getAssociatedObject(self, @selector(cas_parent));
-}
-
-- (void)setCas_parent:(id<CASStyleableItem>)parent {
-    objc_setAssociatedObject(self, @selector(cas_parent), parent, OBJC_ASSOCIATION_ASSIGN);
 }
 
 - (id<CASStyleableItem>)cas_alternativeParent {

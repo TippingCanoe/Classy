@@ -182,6 +182,12 @@
          <FileRef
             location = "group:UISlider+CASAdditions.m">
          </FileRef>
+         <FileRef
+            location = "group:CASAssociatedObjectsWeakWrapper.h">
+         </FileRef>
+         <FileRef
+            location = "group:CASAssociatedObjectsWeakWrapper.m">
+         </FileRef>
       </Group>
       <Group
          location = "group:Reflection"
