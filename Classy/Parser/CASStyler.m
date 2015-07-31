@@ -46,8 +46,6 @@ NSArray *ClassGetSubclasses(Class parentClass) {
 
 @property (nonatomic, strong) NSMutableArray *styleNodes;
 @property (nonatomic, strong) NSMapTable *objectClassDescriptorCache;
-@property (nonatomic, strong) NSHashTable *scheduledItems;
-@property (nonatomic, strong) NSTimer *updateTimer;
 @property (nonatomic, strong) NSMutableArray *fileWatchers;
 @property (nonatomic, strong) NSMutableArray *invocationObjectArguments;
 @property (nonatomic, strong) NSMutableDictionary *styleClassIndex;
@@ -72,7 +70,6 @@ NSArray *ClassGetSubclasses(Class parentClass) {
     if (!self) return nil;
 
     self.objectClassDescriptorCache = NSMapTable.strongToStrongObjectsMapTable;
-    self.scheduledItems = [NSHashTable hashTableWithOptions:NSHashTableWeakMemory];
     self.fileWatchers = NSMutableArray.new;
     self.styleClassIndex = [NSMutableDictionary new];
     self.objectClassIndex = [NSMutableDictionary new];
@@ -708,46 +705,12 @@ NSArray *ClassGetSubclasses(Class parentClass) {
 
 #pragma mark - sceduling
 
-- (void)updateScheduledItems {
-
-    @synchronized(self.scheduledItems) {
-        
-        for (id<CASStyleableItem> item in self.scheduledItems.allObjects.copy) {
-            if (!item) continue;
-            [item cas_updateStylingIfNeeded];
-        }
-
-        if (self.scheduledItems.allObjects.count == 0) {
-            [self.updateTimer invalidate];
-            self.updateTimer = nil;
-        }
-    }
-}
-
 - (void)scheduleUpdateForItem:(id<CASStyleableItem>)item {
-    
-    @synchronized(self.scheduledItems) {
-
-        [self.scheduledItems addObject:item];
-
-        if (self.scheduledItems.allObjects.count && !self.updateTimer.isValid) {
-            self.updateTimer = [NSTimer timerWithTimeInterval:0.0 target:self selector:@selector(updateScheduledItems) userInfo:nil repeats:YES];
-            [NSRunLoop.mainRunLoop addTimer:self.updateTimer forMode:NSRunLoopCommonModes];
-        }
-    }
+    [item cas_updateStylingIfNeeded];
 }
 
 - (void)unscheduleUpdateForItem:(id<CASStyleableItem>)item {
-    
-    @synchronized(self.scheduledItems) {
-    
-        [self.scheduledItems removeObject:item];
 
-        if (self.scheduledItems.allObjects.count == 0) {
-            [self.updateTimer invalidate];
-            self.updateTimer = nil;
-        }
-    }
 }
 
 #pragma mark - file watcher
