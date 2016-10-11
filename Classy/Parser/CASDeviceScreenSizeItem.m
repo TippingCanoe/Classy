@@ -5,9 +5,7 @@
 
 #import "CASDeviceScreenSizeItem.h"
 
-@implementation CASDeviceScreenSizeItem {
-
-}
+@implementation CASDeviceScreenSizeItem
 
 - (BOOL)isValid {
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
@@ -25,7 +23,7 @@
         case CASRelationLessThanOrEqual:
             return sizeInDimension <= self.value;
         case CASRelationEqual:
-            return fabsf(self.value - sizeInDimension) < 0.001;
+            return fabs(self.value - sizeInDimension) < 0.001;
         case CASRelationGreaterThanOrEqual:
             return sizeInDimension >= self.value;
         case CASRelationGreaterThan:
@@ -41,5 +39,22 @@
     return [NSString stringWithFormat:@"(screen-%@:%@%.0f)", dimensionString, [CASDeviceSelector stringFromRelation:self.relation], self.value];
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [self init];
+    if (nil != self) {
+        self.relation = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(relation))];
+        self.value = [aDecoder decodeFloatForKey:NSStringFromSelector(@selector(value))];
+        self.dimension = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(dimension))];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeInteger:self.relation forKey:NSStringFromSelector(@selector(relation))];
+    [aCoder encodeFloat:self.value forKey:NSStringFromSelector(@selector(value))];
+    [aCoder encodeInteger:self.dimension forKey:NSStringFromSelector(@selector(dimension))];
+}
 
 @end
